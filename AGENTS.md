@@ -4,7 +4,7 @@ Instructions for AI agents working on this codebase.
 
 ## Context
 
-This is a pi extension (TypeScript, no build step) that integrates with cmux's Unix domain socket API. Read `CLAUDE.md` for project structure and conventions. Read `cmux-guide.md` for the full cmux API reference. Read `TODO.md` for the roadmap.
+This is a pi extension (TypeScript, no build step) that integrates with cmux's Unix domain socket API. All six phases are complete and the package is installable via `pi install git:github.com/sasha-computer/pi-cmux`. Read `CLAUDE.md` for project structure and conventions. Read `cmux-guide.md` for the full cmux API reference. Read `TODO.md` for the roadmap.
 
 ## Rules
 

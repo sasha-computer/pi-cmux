@@ -65,6 +65,6 @@ See `cmux-guide.md` for the full API surface.
 - [x] Phase 1: Context-aware notifications
 - [x] Phase 2: Sidebar status pills
 - [x] Phase 3: Custom tools (browser, workspace, notify)
-- [ ] Phase 4: Session management
-- [ ] Phase 5: Widget + footer
-- [ ] Phase 6: Polish + packaging
+- [x] Phase 4: Session management
+- [x] Phase 5: Widget + footer
+- [x] Phase 6: Polish + packaging

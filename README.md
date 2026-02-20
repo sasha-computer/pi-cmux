@@ -30,7 +30,11 @@ If you're not running inside cmux, the extension does nothing. No errors, no noi
 
 ## Install
 
-Add to your pi settings:
+```bash
+pi install git:github.com/sasha-computer/pi-cmux
+```
+
+Or add to your pi settings manually:
 
 ```json
 {
@@ -88,7 +92,7 @@ See [TODO.md](TODO.md) for the full plan.
 - [x] **Phase 3** -- LLM-callable tools (browser, workspace, notify)
 - [x] **Phase 4** -- Session management integration
 - [x] **Phase 5** -- Widget + footer integration
-- [ ] **Phase 6** -- Polish + packaging
+- [x] **Phase 6** -- Polish + packaging
 
 ## License
 
