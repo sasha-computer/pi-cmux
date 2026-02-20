@@ -1,0 +1,12 @@
+{
+  "name": "pi-cmux",
+  "version": "0.1.0",
+  "description": "Pi extension for cmux — context-aware notifications, sidebar status, and browser automation over the cmux socket API",
+  "keywords": ["pi-package"],
+  "pi": {
+    "extensions": ["./extensions"]
+  },
+  "peerDependencies": {
+    "@mariozechner/pi-coding-agent": "*"
+  }
+}
