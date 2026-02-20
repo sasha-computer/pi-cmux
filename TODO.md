@@ -242,10 +242,14 @@ pi.registerTool({
 
 ---
 
-## Phase 4: Session Management Integration
+## Phase 4: Session Management Integration ✅
 
 **Goal**: Wire into cmux's `claude-hook` session tracking so the sidebar shows
 rich context even across pi session switches.
+
+**Status**: Done. Session start sets initial sidebar status and registers with
+cmux session tracking. Session shutdown clears all status pills and sends a
+final summary notification.
 
 ### On `session_start`
 
@@ -279,9 +283,12 @@ pi.on("session_shutdown", async (_event, ctx) => {
 
 ---
 
-## Phase 5: Widget + Footer Integration
+## Phase 5: Widget + Footer Integration ✅
 
 **Goal**: Show cmux connection state and workspace info inside pi's own TUI.
+
+**Status**: Done. Footer shows "cmux" when connected. Widget displays unread
+notification count from other workspaces.
 
 ### Footer status
 

@@ -22,6 +22,10 @@ Replaces generic "Waiting for input" notifications with real context about what 
 - `cmux_workspace` -- list/create workspaces, split panes, focus surfaces, send text to other terminals
 - `cmux_notify` -- send targeted notifications when the agent needs your attention
 
+**Session management** -- registers with cmux's session tracking on start, clears all state on shutdown. Sidebar stays accurate across pi session switches.
+
+**Footer + widget** -- pi's TUI footer shows "cmux" when connected. A widget surfaces unread notification counts from other workspaces.
+
 If you're not running inside cmux, the extension does nothing. No errors, no noise.
 
 ## Install
@@ -82,8 +86,8 @@ See [TODO.md](TODO.md) for the full plan.
 - [x] **Phase 1** -- Context-aware notifications
 - [x] **Phase 2** -- Sidebar status pills
 - [x] **Phase 3** -- LLM-callable tools (browser, workspace, notify)
-- [ ] **Phase 4** -- Session management integration
-- [ ] **Phase 5** -- Widget + footer integration
+- [x] **Phase 4** -- Session management integration
+- [x] **Phase 5** -- Widget + footer integration
 - [ ] **Phase 6** -- Polish + packaging
 
 ## License

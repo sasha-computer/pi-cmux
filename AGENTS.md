@@ -47,4 +47,4 @@ Key v2 methods: `notification.create`, `notification.create_for_surface`, `syste
 | `notifications.ts` | Hook handlers, content extraction, summary building | Changing notification behavior |
 | `status.ts` | Sidebar status pills (model, state, thinking, tokens) | Changing sidebar display |
 | `tools.ts` | LLM-callable tools (browser, workspace, notify) | Adding/changing agent tools |
-| `index.ts` | Wires hooks + tools, manages connection lifecycle | Adding new phases/features |
+| `index.ts` | Wires hooks + tools, manages connection lifecycle, session management, footer/widget | Adding new phases/features |
