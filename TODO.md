@@ -161,10 +161,16 @@ for (const key of ["pi_model", "pi_state", "pi_thinking", "pi_tokens"]) {
 
 ---
 
-## Phase 3: Custom Tools for the LLM
+## Phase 3: Custom Tools for the LLM ✅
 
 **Goal**: Let the agent control cmux programmatically -- open browser splits,
 create workspaces, navigate, snapshot pages.
+
+**Status**: Done. Three tools registered: `cmux_browser` (16 actions covering
+full browser automation), `cmux_workspace` (9 actions for workspace/surface
+control), and `cmux_notify` (surface-targeted notifications). All tools
+gracefully degrade when cmux is unavailable. Large responses (snapshots)
+truncated to 50KB/2000 lines.
 
 ### Tool: `cmux_browser`
 
