@@ -2,8 +2,7 @@
  * pi-cmux: Native cmux extension for pi.
  *
  * Phase 1: Context-aware notifications via the cmux socket API.
- * Replaces generic "Waiting for input" with real context about
- * what the agent did and what it needs.
+ * Phase 2: Sidebar status pills (model, state, thinking, tokens).
  *
  * Gracefully degrades: if not running inside cmux, the extension
  * is a silent no-op.
@@ -12,6 +11,7 @@
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { CmuxClient } from "./cmux-client.js";
 import { wireNotifications } from "./notifications.js";
+import { wireStatus } from "./status.js";
 
 export default function (pi: ExtensionAPI) {
   const client = new CmuxClient();
@@ -28,6 +28,9 @@ export default function (pi: ExtensionAPI) {
 
   // Wire context-aware notifications
   wireNotifications(pi, client);
+
+  // Wire sidebar status pills
+  wireStatus(pi, client);
 
   // Clean up on shutdown
   pi.on("session_shutdown", async () => {

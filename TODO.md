@@ -127,10 +127,14 @@ From `tool_result` events (streamed):
 
 ---
 
-## Phase 2: Sidebar Status Pills
+## Phase 2: Sidebar Status Pills ✅
 
 **Goal**: The cmux sidebar shows per-workspace status pills. Use them to
 display agent state at a glance.
+
+**Status**: Done. V1 command support added to CmuxClient (FIFO queue for
+non-JSON responses). Status pills for model, state, thinking level, and
+token usage wired to lifecycle hooks. All pills cleared on session shutdown.
 
 ### Status entries to maintain
 
