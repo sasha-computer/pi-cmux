@@ -12,16 +12,20 @@ import { StringEnum } from "@mariozechner/pi-ai";
 import { Type } from "@sinclair/typebox";
 import type { CmuxClient } from "./cmux-client.js";
 
-/** Format a cmux response for tool output. */
-function formatResult(result: any): string {
+/** Format a cmux response as a proper AgentToolResult. */
+function formatResult(result: any): { content: { type: "text"; text: string }[]; details: undefined } {
+  let text: string;
   if (result === null || result === undefined) {
-    return "cmux did not respond (socket unavailable or timed out)";
+    text = "cmux did not respond (socket unavailable or timed out)";
+  } else if (typeof result === "string") {
+    text = result;
+  } else {
+    const json = JSON.stringify(result, null, 2);
+    // Truncate large responses (snapshots can be huge)
+    const truncated = truncateTail(json, { maxBytes: 50_000, maxLines: 2000 });
+    text = truncated.content;
   }
-  if (typeof result === "string") return result;
-  const json = JSON.stringify(result, null, 2);
-  // Truncate large responses (snapshots can be huge)
-  const truncated = truncateTail(json, 50_000, 2000);
-  return truncated;
+  return { content: [{ type: "text", text }], details: undefined };
 }
 
 export function wireTools(pi: ExtensionAPI, client: CmuxClient): void {
@@ -73,12 +77,12 @@ export function wireTools(pi: ExtensionAPI, client: CmuxClient): void {
 
       switch (params.action) {
         case "open": {
-          if (!params.url) return "Error: url is required for open action";
+          if (!params.url) return formatResult("Error: url is required for open action");
           const result = await client.request("browser.open_split", { url: params.url, ...surfaceParams });
           return formatResult(result ?? "Browser split opened");
         }
         case "navigate": {
-          if (!params.url) return "Error: url is required for navigate action";
+          if (!params.url) return formatResult("Error: url is required for navigate action");
           const result = await client.request("browser.navigate", { url: params.url, ...surfaceParams });
           return formatResult(result ?? "Navigated");
         }
@@ -87,18 +91,18 @@ export function wireTools(pi: ExtensionAPI, client: CmuxClient): void {
           return formatResult(result);
         }
         case "click": {
-          if (!params.selector) return "Error: selector is required for click action";
+          if (!params.selector) return formatResult("Error: selector is required for click action");
           const result = await client.request("browser.click", { selector: params.selector, ...surfaceParams });
           return formatResult(result ?? "Clicked");
         }
         case "fill": {
-          if (!params.selector) return "Error: selector is required for fill action";
-          if (params.text === undefined) return "Error: text is required for fill action";
+          if (!params.selector) return formatResult("Error: selector is required for fill action");
+          if (params.text === undefined) return formatResult("Error: text is required for fill action");
           const result = await client.request("browser.fill", { selector: params.selector, text: params.text, ...surfaceParams });
           return formatResult(result ?? "Filled");
         }
         case "eval": {
-          if (!params.code) return "Error: code is required for eval action";
+          if (!params.code) return formatResult("Error: code is required for eval action");
           const result = await client.request("browser.eval", { code: params.code, ...surfaceParams });
           return formatResult(result);
         }
@@ -107,7 +111,7 @@ export function wireTools(pi: ExtensionAPI, client: CmuxClient): void {
           return formatResult(result);
         }
         case "get_text": {
-          if (!params.selector) return "Error: selector is required for get_text action";
+          if (!params.selector) return formatResult("Error: selector is required for get_text action");
           const result = await client.request("browser.get_text", { selector: params.selector, ...surfaceParams });
           return formatResult(result);
         }
@@ -116,7 +120,7 @@ export function wireTools(pi: ExtensionAPI, client: CmuxClient): void {
           return formatResult(result);
         }
         case "wait": {
-          if (!params.selector) return "Error: selector is required for wait action";
+          if (!params.selector) return formatResult("Error: selector is required for wait action");
           const waitParams: Record<string, any> = { selector: params.selector, ...surfaceParams };
           if (params.hidden) waitParams.hidden = true;
           const result = await client.request("browser.wait", waitParams);
@@ -135,12 +139,12 @@ export function wireTools(pi: ExtensionAPI, client: CmuxClient): void {
           return formatResult(result ?? "Reloaded");
         }
         case "press": {
-          if (!params.text) return "Error: text (key name) is required for press action";
+          if (!params.text) return formatResult("Error: text (key name) is required for press action");
           const result = await client.request("browser.press", { key: params.text, ...surfaceParams });
           return formatResult(result ?? "Key pressed");
         }
         case "scroll": {
-          if (!params.selector) return "Error: selector is required for scroll action";
+          if (!params.selector) return formatResult("Error: selector is required for scroll action");
           const result = await client.request("browser.scroll", {
             selector: params.selector,
             dx: params.dx ?? 0,
@@ -150,17 +154,17 @@ export function wireTools(pi: ExtensionAPI, client: CmuxClient): void {
           return formatResult(result ?? "Scrolled");
         }
         case "find_role": {
-          if (!params.role) return "Error: role is required for find_role action";
+          if (!params.role) return formatResult("Error: role is required for find_role action");
           const result = await client.request("browser.find.role", { role: params.role, ...surfaceParams });
           return formatResult(result);
         }
         case "is_visible": {
-          if (!params.selector) return "Error: selector is required for is_visible action";
+          if (!params.selector) return formatResult("Error: selector is required for is_visible action");
           const result = await client.request("browser.is_visible", { selector: params.selector, ...surfaceParams });
           return formatResult(result);
         }
         default:
-          return `Unknown action: ${params.action}`;
+          return formatResult(`Unknown action: ${params.action}`);
       }
     },
   });
@@ -210,12 +214,12 @@ export function wireTools(pi: ExtensionAPI, client: CmuxClient): void {
           return formatResult(result);
         }
         case "focus": {
-          if (!params.surface_id) return "Error: surface_id is required for focus action";
+          if (!params.surface_id) return formatResult("Error: surface_id is required for focus action");
           const result = await client.request("surface.focus", { surface_id: params.surface_id });
           return formatResult(result ?? "Focused");
         }
         case "flash": {
-          if (!params.surface_id) return "Error: surface_id is required for flash action";
+          if (!params.surface_id) return formatResult("Error: surface_id is required for flash action");
           const result = await client.request("surface.trigger_flash", { surface_id: params.surface_id });
           return formatResult(result ?? "Flashed");
         }
@@ -224,24 +228,24 @@ export function wireTools(pi: ExtensionAPI, client: CmuxClient): void {
           return formatResult(result);
         }
         case "send_text": {
-          if (!params.surface_id) return "Error: surface_id is required for send_text action";
-          if (!params.text) return "Error: text is required for send_text action";
+          if (!params.surface_id) return formatResult("Error: surface_id is required for send_text action");
+          if (!params.text) return formatResult("Error: text is required for send_text action");
           const result = await client.request("surface.send_text", { surface_id: params.surface_id, text: params.text });
           return formatResult(result ?? "Text sent");
         }
         case "send_key": {
-          if (!params.surface_id) return "Error: surface_id is required for send_key action";
-          if (!params.text) return "Error: text (key name) is required for send_key action";
+          if (!params.surface_id) return formatResult("Error: surface_id is required for send_key action");
+          if (!params.text) return formatResult("Error: text (key name) is required for send_key action");
           const result = await client.request("surface.send_key", { surface_id: params.surface_id, key: params.text });
           return formatResult(result ?? "Key sent");
         }
         case "close": {
-          if (!params.surface_id) return "Error: surface_id is required for close action";
+          if (!params.surface_id) return formatResult("Error: surface_id is required for close action");
           const result = await client.request("surface.close", { surface_id: params.surface_id });
           return formatResult(result ?? "Closed");
         }
         default:
-          return `Unknown action: ${params.action}`;
+          return formatResult(`Unknown action: ${params.action}`);
       }
     },
   });
